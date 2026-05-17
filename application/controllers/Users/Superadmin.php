@@ -1507,76 +1507,46 @@ class Superadmin extends CI_Controller
         $this->template->load('template/default/template', 'superadmin/v_maintenance', $this->data);
     }
 
-    // public function prosesMaintenance()
-    // {
-    //     $password = $this->input->post('confirm_password');
-
-    //     // ambil data user login
-    //     $user = $this->db
-    //         ->where('id_user', $this->session->userdata('id_user'))
-    //         ->get('tbl_user')
-    //         ->row_array();
-    //     // ambil data site config
-    //     $site_config = $this->db
-    //         ->get('site_config')
-    //         ->row_array();
-
-    //     // cek password plain text
-    //     if ($password != $site_config['pass_config']) {
-
-    //         echo "
-    //         <script>
-    //             alert('Password salah!');
-    //             window.history.back();
-    //         </script>
-    //     ";
-
-    //         exit;
-    //     }
-
-    //     // status maintenance
-    //     $maintenance = $this->input->post('maintenance_mode') ? 1 : 0;
-
-    //     // update database
-    //     $this->db->update('site_config', [
-    //         'maintenance_mode' => $maintenance
-    //     ]);
-
-    //     echo "
-    //     <script>
-    //         alert('Status maintenance berhasil diupdate!');
-    //         window.location.href = '" . base_url('Users/superadmin/maintenance') . "';
-    //     </script>";
-    // }
     public function prosesMaintenance()
     {
-        // cek role superadmin
-        if ($this->session->userdata('is_role') != '1') {
+        $password = $this->input->post('confirm_password');
 
-            show_error('Akses ditolak!', 403);
+        // ambil data user login
+        $user = $this->db
+            ->where('id_user', $this->session->userdata('id_user'))
+            ->get('tbl_user')
+            ->row_array();
+        // ambil data site config
+        $site_config = $this->db
+            ->get('site_config')
+            ->row_array();
+
+        // cek password plain text
+        if ($password != $site_config['pass_config']) {
+
+            echo "
+            <script>
+                alert('Password salah!');
+                window.history.back();
+            </script>
+        ";
+
+            exit;
         }
 
-        // checkbox
-        $maintenance_mode = $this->input->post('maintenance_mode');
-
-        // jika checkbox dicentang = 1
-        // jika tidak dicentang = 0
-        $status = ($maintenance_mode == '1') ? 1 : 0;
+        // status maintenance
+        $maintenance = $this->input->post('maintenance_mode') ? 1 : 0;
 
         // update database
-        $this->db->update(
-            'site_config',
-            [
-                'maintenance_mode' => $status
-            ]
-        );
+        $this->db->update('site_config', [
+            'maintenance_mode' => $maintenance
+        ]);
 
-        // flash message
-        $this->session->set_flashdata(
-            'success',
-            'Status maintenance berhasil diperbarui!'
-        );
-
-        redirect('Users/superadmin/maintenance');
+        echo "
+        <script>
+            alert('Status maintenance berhasil diupdate!');
+            window.location.href = '" . base_url('users/superadmin/maintenance') . "';
+        </script>
+    ";
     }
 }
